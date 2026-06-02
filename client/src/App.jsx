@@ -4,6 +4,8 @@ import Register from './pages/Register'
 import StudentDashboard from './pages/studentDashboard'
 import TeacherDashboard from './pages/teacherDashboard'
 import Home from './pages/home'
+import CreateCourse from './pages/createCourses'
+import CourseDetail from './pages/courseDetail'
 
 export default function App() {
   return (
@@ -14,6 +16,8 @@ export default function App() {
       <Route path="/student/dashboard" element={<StudentDashboard />} />
       <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
       <Route path="/home" element={<Home />} />
+      <Route path="/teacher/create-course" element={<CreateCourse />} />
+      <Route path="/teacher/course/:id" element={<CourseDetail />} />
     </Routes>
   )
 }

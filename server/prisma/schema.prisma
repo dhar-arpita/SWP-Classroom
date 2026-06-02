@@ -22,11 +22,35 @@ model Course {
   id          Int      @id @default(autoincrement())
   title       String
   description String?
+  isPaid      Boolean  @default(false)
+  price       Int      @default(0)
+  thumbnail   String?
   createdAt   DateTime @default(now())
   teacher     User     @relation(fields: [teacherId], references: [id])
   teacherId   Int
-  materials   Material[]
+  chapters    Chapter[]
   enrollments CourseEnrollment[]
+}
+
+model Chapter {
+  id        Int      @id @default(autoincrement())
+  title     String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  Int
+  videos    Video[]
+}
+
+model Video {
+  id        Int        @id @default(autoincrement())
+  title     String
+  url       String
+  order     Int        @default(0)
+  createdAt DateTime   @default(now())
+  chapter   Chapter    @relation(fields: [chapterId], references: [id])
+  chapterId Int
+  materials Material[]
 }
 
 model Material {
@@ -35,8 +59,8 @@ model Material {
   fileUrl   String
   fileType  String
   createdAt DateTime @default(now())
-  course    Course   @relation(fields: [courseId], references: [id])
-  courseId  Int
+  video     Video    @relation(fields: [videoId], references: [id])
+  videoId   Int
 }
 
 model CourseEnrollment {
@@ -45,5 +69,6 @@ model CourseEnrollment {
   userId    Int
   course    Course   @relation(fields: [courseId], references: [id])
   courseId  Int
+  status    String   @default("pending")
   joinedAt  DateTime @default(now())
 }

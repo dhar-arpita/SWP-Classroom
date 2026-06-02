@@ -108,8 +108,9 @@ export default function Home() {
                         <div className="text-center md:text-left">
                             <p className="text-purple-400 text-sm uppercase tracking-widest mb-1">Your Instructor</p>
                             <h2 className="text-2xl font-bold text-white mb-1">Tanmay Dhar</h2>
-                            <p className="text-gray-400 mb-4">Physics Teacher | SWP Founder</p>
-                            <p className="text-gray-400 mb-4">University of Chittagong(bachelor of science in physics)</p>
+                            <p className="text-gray-400 mb-4">CEO, SWP CLASSROOM  </p>
+                            <p className="text-gray-400 mb-4">11 Years+ teaching Experience </p>
+                            <p className="text-gray-400 mb-4">Mentored 2.5M+ Student in Online and offline  </p>
                             <p className="text-gray-500 text-sm mb-6">কোনো প্রশ্ন আছে? সরাসরি Instructor এর সাথে কথা বলো।</p>
                             <a href="https://www.facebook.com/tanmay.dhar.39" target="_blank" rel="noreferrer"
                                 className="inline-flex items-center gap-2 bg-violet-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition whitespace-nowrap">

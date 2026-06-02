@@ -1,16 +1,39 @@
+import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import axios from 'axios'
 
 export default function TeacherDashboard() {
- const { user } = useAuth()
-const navigate = useNavigate()
+  const { user } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(true)
+  const successMessage = location.state?.success
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await axios.get('/api/courses')
+        setCourses(res.data)
+      } catch (err) {
+        console.error(err)
+      }
+      setLoading(false)
+    }
+    fetchCourses()
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
-      {/* Navbar */}
       <Navbar role="teacher" />
 
+      {successMessage && (
+        <div className="bg-green-900/30 border-b border-green-500/50 text-green-400 px-6 py-3 text-center text-sm font-medium">
+          ✅ Course has been successfully created!
+        </div>
+      )}
 
       {/* Hero */}
       <div className="bg-gradient-to-br from-gray-900 via-purple-950 to-gray-900 px-4 py-16">
@@ -23,27 +46,32 @@ const navigate = useNavigate()
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
+
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <div className="bg-gray-900 border border-gray-800 hover:border-purple-500 transition rounded-2xl p-6 flex items-center gap-4">
             <div className="bg-purple-900 p-3 rounded-xl text-2xl">📚</div>
             <div>
               <p className="text-gray-400 text-sm">Total Courses</p>
-              <p className="text-3xl font-bold text-purple-400">0</p>
+              <p className="text-3xl font-bold text-purple-400">{courses.length}</p>
             </div>
           </div>
           <div className="bg-gray-900 border border-gray-800 hover:border-blue-500 transition rounded-2xl p-6 flex items-center gap-4">
             <div className="bg-blue-900 p-3 rounded-xl text-2xl">👨‍🎓</div>
             <div>
               <p className="text-gray-400 text-sm">Total Students</p>
-              <p className="text-3xl font-bold text-blue-400">0</p>
+              <p className="text-3xl font-bold text-blue-400">
+                {courses.reduce((acc, c) => acc + (c.enrollments?.length || 0), 0)}
+              </p>
             </div>
           </div>
           <div className="bg-gray-900 border border-gray-800 hover:border-green-500 transition rounded-2xl p-6 flex items-center gap-4">
             <div className="bg-green-900 p-3 rounded-xl text-2xl">📄</div>
             <div>
               <p className="text-gray-400 text-sm">Total Materials</p>
-              <p className="text-3xl font-bold text-green-400">0</p>
+              <p className="text-3xl font-bold text-green-400">
+                {courses.reduce((acc, c) => acc + (c.materials?.length || 0), 0)}
+              </p>
             </div>
           </div>
         </div>
@@ -59,17 +87,51 @@ const navigate = useNavigate()
               + Create Course
             </button>
           </div>
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="text-6xl mb-4 animate-bounce">⚡</div>
-            <p className="text-gray-400 text-lg">No courses yet!</p>
-            <p className="text-gray-600 text-sm mt-1">Create your first course to get started.</p>
-            <button
-              onClick={() => navigate('/teacher/create-course')}
-              className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition"
-            >
-              + Create Course
-            </button>
-          </div>
+
+          {loading ? (
+            <div className="text-center py-16 text-gray-400">Loading...</div>
+          ) : courses.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="text-6xl mb-4 animate-bounce">⚡</div>
+              <p className="text-gray-400 text-lg">No courses yet!</p>
+              <p className="text-gray-600 text-sm mt-1">Create your first course to get started.</p>
+              <button
+                onClick={() => navigate('/teacher/create-course')}
+                className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition"
+              >
+                + Create Course
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {courses.map((course) => (
+                <div
+                  key={course.id}
+                  onClick={() => navigate(`/teacher/course/${course.id}`)}
+                  className="bg-gray-800 border border-gray-700 hover:border-purple-500 transition rounded-xl overflow-hidden cursor-pointer"
+                >
+                  {course.thumbnail ? (
+                    <img src={course.thumbnail} alt={course.title} className="w-full h-40 object-cover" />
+                  ) : (
+                    <div className="w-full h-40 bg-gray-700 flex items-center justify-center text-4xl">📚</div>
+                  )}
+                  <div className="p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${course.isPaid ? 'bg-purple-900 text-purple-300' : 'bg-green-900 text-green-300'}`}>
+                        {course.isPaid ? `💰 ৳${course.price}` : '🆓 Free'}
+                      </span>
+                    </div>
+                    <h4 className="text-white font-semibold mb-1">{course.title}</h4>
+                    <p className="text-gray-400 text-sm line-clamp-2">{course.description}</p>
+                    <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
+                      <span>👥 {course.enrollments?.length || 0} students</span>
+                      <span>📄 {course.materials?.length || 0} materials</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
