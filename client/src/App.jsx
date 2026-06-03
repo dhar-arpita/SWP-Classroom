@@ -8,6 +8,7 @@ import CreateCourse from './pages/createCourses'
 import CourseDetail from './pages/courseDetail'
 import TeacherCourses from './pages/teacherCourses'
 import StudentHome from './pages/studentHome'
+import StudentCourseDetail from './pages/studentCourseDetail'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
       <Route path="/teacher/course/:id" element={<CourseDetail />} />
       <Route path="/teacher/courses" element={<TeacherCourses />} />
       <Route path="/student/home" element={<StudentHome />} />
+      <Route path="/student/course/:id" element={<StudentCourseDetail />} />
     </Routes>
   )
 }

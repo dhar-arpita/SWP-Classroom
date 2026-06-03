@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
 import axios from 'axios'
 
 export default function StudentHome() {
   const navigate = useNavigate()
+  const { token } = useAuth()
   const [courses, setCourses] = useState([])
   const [filtered, setFiltered] = useState([])
+  const [enrollMap, setEnrollMap] = useState({})
   const [loading, setLoading] = useState(true)
   const [selectedClass, setSelectedClass] = useState('All')
   const [selectedSubject, setSelectedSubject] = useState('All')
@@ -15,16 +18,25 @@ export default function StudentHome() {
   const subjects = ['All', 'Physics', 'Chemistry', 'Biology', 'Math', 'English', 'Other']
 
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchData = async () => {
       try {
         const res = await axios.get('/api/courses')
         setCourses(res.data)
         setFiltered(res.data)
+
+        if (token) {
+          const enrRes = await axios.get('/api/enrollments/my-enrollments', {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          const map = {}
+          enrRes.data.forEach((e) => { map[e.courseId] = e.status })
+          setEnrollMap(map)
+        }
       } catch (err) { console.error(err) }
       setLoading(false)
     }
-    fetchCourses()
-  }, [])
+    fetchData()
+  }, [token])
 
   useEffect(() => {
     let result = courses
@@ -50,8 +62,6 @@ export default function StudentHome() {
 
         {/* Filters */}
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 mb-8 space-y-4">
-
-          {/* Class Filter */}
           <div>
             <p className="text-gray-400 text-xs uppercase tracking-widest mb-3">Class</p>
             <div className="flex flex-wrap gap-2">
@@ -67,7 +77,6 @@ export default function StudentHome() {
             </div>
           </div>
 
-          {/* Subject Filter */}
           <div>
             <p className="text-gray-400 text-xs uppercase tracking-widest mb-3">Subject</p>
             <div className="flex flex-wrap gap-2">
@@ -82,7 +91,6 @@ export default function StudentHome() {
               ))}
             </div>
           </div>
-
         </div>
 
         {/* Courses */}
@@ -96,34 +104,45 @@ export default function StudentHome() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((course) => (
-              <div
-                key={course.id}
-                onClick={() => navigate(`/student/course/${course.id}`)}
-                className="bg-gray-900 border border-gray-800 hover:border-purple-500 transition rounded-2xl overflow-hidden cursor-pointer"
-              >
-                {course.thumbnail ? (
-                  <img src={course.thumbnail} alt={course.title} className="w-full h-44 object-cover" />
-                ) : (
-                  <div className="w-full h-44 bg-gray-800 flex items-center justify-center text-4xl">📚</div>
-                )}
-                <div className="p-4">
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${course.isPaid ? 'bg-purple-900 text-purple-300' : 'bg-green-900 text-green-300'}`}>
-                      {course.isPaid ? `💰 ৳${course.price}` : '🆓 Free'}
-                    </span>
-                    {course.class && <span className="text-xs px-2 py-1 rounded-full bg-blue-900 text-blue-300">{course.class}</span>}
-                    {course.subject && <span className="text-xs px-2 py-1 rounded-full bg-yellow-900 text-yellow-300">{course.subject}</span>}
-                  </div>
-                  <h3 className="text-white font-semibold mb-1">{course.title}</h3>
-                  <p className="text-gray-400 text-sm line-clamp-2">{course.description}</p>
-                  <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
-                    <span>📚 {course.chapters?.length || 0} chapters</span>
-                    <span>🎥 {course.chapters?.reduce((a, ch) => a + (ch.videos?.length || 0), 0) || 0} videos</span>
+            {filtered.map((course) => {
+              const status = enrollMap[course.id]
+              return (
+                <div
+                  key={course.id}
+                  onClick={() => navigate(`/student/course/${course.id}`)}
+                  className="relative bg-gray-900 border border-gray-800 hover:border-purple-500 transition rounded-2xl overflow-hidden cursor-pointer"
+                >
+                  {/* Enrollment badge */}
+                  {status === 'approved' && (
+                    <span className="absolute top-3 right-3 z-10 text-xs px-2.5 py-1 rounded-full bg-green-600 text-white font-semibold shadow-lg">✅ Enrolled</span>
+                  )}
+                  {status === 'pending' && (
+                    <span className="absolute top-3 right-3 z-10 text-xs px-2.5 py-1 rounded-full bg-yellow-500 text-gray-900 font-semibold shadow-lg">⏳ Pending</span>
+                  )}
+
+                  {course.thumbnail ? (
+                    <img src={course.thumbnail} alt={course.title} className="w-full h-44 object-cover" />
+                  ) : (
+                    <div className="w-full h-44 bg-gray-800 flex items-center justify-center text-4xl">📚</div>
+                  )}
+                  <div className="p-4">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${course.isPaid ? 'bg-purple-900 text-purple-300' : 'bg-green-900 text-green-300'}`}>
+                        {course.isPaid ? `💰 ৳${course.price}` : '🆓 Free'}
+                      </span>
+                      {course.class && <span className="text-xs px-2 py-1 rounded-full bg-blue-900 text-blue-300">{course.class}</span>}
+                      {course.subject && <span className="text-xs px-2 py-1 rounded-full bg-yellow-900 text-yellow-300">{course.subject}</span>}
+                    </div>
+                    <h3 className="text-white font-semibold mb-1">{course.title}</h3>
+                    <p className="text-gray-400 text-sm line-clamp-2">{course.description}</p>
+                    <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
+                      <span>📚 {course.chapters?.length || 0} chapters</span>
+                      <span>🎥 {course.chapters?.reduce((a, ch) => a + (ch.videos?.length || 0), 0) || 0} videos</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
