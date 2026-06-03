@@ -12,15 +12,15 @@ export default function Navbar({ role }) {
   }
 
   const studentLinks = [
-    { label: 'Home', path: '/home' },
+    location.pathname === '/student/dashboard' ? { label: 'Home', path: '/student/home' } : { label: 'Dashboard', path: '/student/dashboard' },
     { label: 'My Courses', path: '/student/courses' },
     { label: 'Progress', path: '/student/progress' },
     { label: 'Announcements', path: '/student/announcements' },
   ]
 
   const teacherLinks = [
-    { label: 'Home', path: '/home' },
-    { label: 'My Courses', path: '/teacher/courses' },
+    { label: 'Home', path: '/teacher/dashboard' },
+     { label: 'My Courses', path: '/teacher/courses' },
     { label: '+ Create Course', path: '/teacher/create-course' },
   ]
 
@@ -45,7 +45,7 @@ export default function Navbar({ role }) {
             <button
               key={link.path}
               onClick={() => navigate(link.path)}
-              className={`px-8 py-2 rounded-lg text-sm font-medium transition-all border ${location.pathname === link.path
+              className={`px-8 py-2 rounded-lg text-sm font-medium transition-all border ${link.path === '/student/dashboard'|| link.path === '/student/home' || link.path === 'teacher/dashboard'
                   ? 'bg-purple-600 border-purple-600 text-white'
                   : 'border-gray-700 text-gray-300 hover:text-white hover:bg-gray-800 hover:border-gray-500'
                 }`}

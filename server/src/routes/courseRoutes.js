@@ -19,4 +19,5 @@ router.delete('/:id/chapters/:chapterId/videos/:videoId', verifyToken, deleteVid
 router.post('/:id/chapters/:chapterId/videos/:videoId/materials', verifyToken, addMaterial)
 router.delete('/:id/chapters/:chapterId/videos/:videoId/materials/:materialId', verifyToken, deleteMaterial)
 
+
 export default router

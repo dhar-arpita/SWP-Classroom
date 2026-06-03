@@ -10,9 +10,9 @@ export default function Home() {
             <nav style={{ background: '#0a0a0a', borderBottom: '1px solid #1a1a1a' }} className="sticky top-0 z-50">
                 <div className="w-full px-6 flex items-center justify-between h-16">
                     <div className="flex items-center gap-2">
-                        <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                            <img src="/logo.png" alt="SWP Logo" className="w-full h-full object-cover" />
-                        </div>
+                        <div className="max-w-5xl mx-auto px-6 py-6 flex justify-center">
+                <img src="/logo.png" alt="SWP Classroom" className="w-15 h-15 rounded-full object-cover border-2 border-black/50" />
+            </div>
                         <span className="text-white font-bold text-lg">SWP</span>
                         <span className="hidden lg:block text-gray-500 text-xs ml-1">Survive with Physics</span>
                     </div>
@@ -126,9 +126,7 @@ export default function Home() {
             </div>
 
             {/* Company Logo */}
-            <div className="max-w-5xl mx-auto px-6 py-6 flex justify-center">
-                <img src="/logo.png" alt="SWP Classroom" className="w-80 h-80 rounded-full object-cover border-4 border-black/50" />
-            </div>
+           
             {/* Footer */}
             <footer className="border-t border-gray-800 mt-10 py-8 text-center text-gray-600 text-sm">
                 <p>© 2025 SWP — Survive with Physics. All rights reserved.</p>

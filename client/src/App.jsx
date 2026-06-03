@@ -6,6 +6,8 @@ import TeacherDashboard from './pages/teacherDashboard'
 import Home from './pages/home'
 import CreateCourse from './pages/createCourses'
 import CourseDetail from './pages/courseDetail'
+import TeacherCourses from './pages/teacherCourses'
+import StudentHome from './pages/studentHome'
 
 export default function App() {
   return (
@@ -18,6 +20,8 @@ export default function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/teacher/create-course" element={<CreateCourse />} />
       <Route path="/teacher/course/:id" element={<CourseDetail />} />
+      <Route path="/teacher/courses" element={<TeacherCourses />} />
+      <Route path="/student/home" element={<StudentHome />} />
     </Routes>
   )
 }

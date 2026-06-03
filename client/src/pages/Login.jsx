@@ -33,7 +33,7 @@ export default function Login() {
       <div className="w-full max-w-md">
         {/* Logo */}
          <div className="max-w-5xl mx-auto px-6 py-6 flex justify-center">
-                <img src="/logo.png" alt="SWP Classroom" className="w-60 h-60 rounded-full object-cover border-4 border-black/50" />
+                <img src="/logo.png" alt="SWP Classroom" className="w-100 h-100 rounded-full object-cover border-4 border-black/50" />
             </div>
 
         {/* Card */}

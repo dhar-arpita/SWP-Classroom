@@ -17,13 +17,20 @@ export default function TeacherDashboard() {
       try {
         const res = await axios.get('/api/courses')
         setCourses(res.data)
-      } catch (err) {
-        console.error(err)
-      }
+      } catch (err) { console.error(err) }
       setLoading(false)
     }
     fetchCourses()
   }, [])
+
+  const totalMaterials = courses.reduce((acc, c) =>
+    acc + (c.chapters?.reduce((a, ch) =>
+      a + (ch.videos?.reduce((b, v) =>
+        b + (v.materials?.length || 0), 0) || 0), 0) || 0), 0)
+
+  const totalVideos = courses.reduce((acc, c) =>
+    acc + (c.chapters?.reduce((a, ch) =>
+      a + (ch.videos?.length || 0), 0) || 0), 0)
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
@@ -48,30 +55,35 @@ export default function TeacherDashboard() {
       <div className="max-w-7xl mx-auto px-4 py-8">
 
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           <div className="bg-gray-900 border border-gray-800 hover:border-purple-500 transition rounded-2xl p-6 flex items-center gap-4">
             <div className="bg-purple-900 p-3 rounded-xl text-2xl">📚</div>
             <div>
-              <p className="text-gray-400 text-sm">Total Courses</p>
+              <p className="text-gray-400 text-sm">Courses</p>
               <p className="text-3xl font-bold text-purple-400">{courses.length}</p>
             </div>
           </div>
           <div className="bg-gray-900 border border-gray-800 hover:border-blue-500 transition rounded-2xl p-6 flex items-center gap-4">
             <div className="bg-blue-900 p-3 rounded-xl text-2xl">👨‍🎓</div>
             <div>
-              <p className="text-gray-400 text-sm">Total Students</p>
+              <p className="text-gray-400 text-sm">Students</p>
               <p className="text-3xl font-bold text-blue-400">
                 {courses.reduce((acc, c) => acc + (c.enrollments?.length || 0), 0)}
               </p>
             </div>
           </div>
+          <div className="bg-gray-900 border border-gray-800 hover:border-yellow-500 transition rounded-2xl p-6 flex items-center gap-4">
+            <div className="bg-yellow-900 p-3 rounded-xl text-2xl">🎥</div>
+            <div>
+              <p className="text-gray-400 text-sm">Videos</p>
+              <p className="text-3xl font-bold text-yellow-400">{totalVideos}</p>
+            </div>
+          </div>
           <div className="bg-gray-900 border border-gray-800 hover:border-green-500 transition rounded-2xl p-6 flex items-center gap-4">
             <div className="bg-green-900 p-3 rounded-xl text-2xl">📄</div>
             <div>
-              <p className="text-gray-400 text-sm">Total Materials</p>
-              <p className="text-3xl font-bold text-green-400">
-                {courses.reduce((acc, c) => acc + (c.materials?.length || 0), 0)}
-              </p>
+              <p className="text-gray-400 text-sm">Materials</p>
+              <p className="text-3xl font-bold text-green-400">{totalMaterials}</p>
             </div>
           </div>
         </div>
@@ -94,11 +106,7 @@ export default function TeacherDashboard() {
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <div className="text-6xl mb-4 animate-bounce">⚡</div>
               <p className="text-gray-400 text-lg">No courses yet!</p>
-              <p className="text-gray-600 text-sm mt-1">Create your first course to get started.</p>
-              <button
-                onClick={() => navigate('/teacher/create-course')}
-                className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition"
-              >
+              <button onClick={() => navigate('/teacher/create-course')} className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition">
                 + Create Course
               </button>
             </div>
@@ -124,8 +132,9 @@ export default function TeacherDashboard() {
                     <h4 className="text-white font-semibold mb-1">{course.title}</h4>
                     <p className="text-gray-400 text-sm line-clamp-2">{course.description}</p>
                     <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
-                      <span>👥 {course.enrollments?.length || 0} students</span>
-                      <span>📄 {course.materials?.length || 0} materials</span>
+                      
+                      <span>🎥 {course.chapters?.reduce((a, ch) => a + (ch.videos?.length || 0), 0) || 0} videos</span>
+                      <span>📄 {course.chapters?.reduce((a, ch) => a + (ch.videos?.reduce((b, v) => b + (v.materials?.length || 0), 0) || 0), 0) || 0} materials</span>
                     </div>
                   </div>
                 </div>

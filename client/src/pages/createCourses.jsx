@@ -11,10 +11,15 @@ export default function CreateCourse() {
   const [price, setPrice] = useState(0)
   const [thumbnail, setThumbnail] = useState(null)
   const [preview, setPreview] = useState(null)
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [selectedClass, setSelectedClass] = useState('')
+  const [subject, setSubject] = useState('')
+  const [loading, setLoading] = useState(false)
   const { token } = useAuth()
   const navigate = useNavigate()
+
+  const classes = ['Class-6', 'Class-7', 'Class-8', 'SSC', 'HSC', 'Admission', 'Other']
+  const subjects = ['Physics', 'Chemistry', 'General Math', 'Higher Math', 'Biology', 'English', 'Other']
 
   const handleThumbnail = (e) => {
     const file = e.target.files[0]
@@ -29,6 +34,8 @@ export default function CreateCourse() {
       const formData = new FormData()
       formData.append('title', title)
       formData.append('description', description)
+      formData.append('class', selectedClass)
+      formData.append('subject', subject)
       formData.append('isPaid', isPaid)
       formData.append('price', price)
       if (thumbnail) formData.append('thumbnail', thumbnail)
@@ -112,6 +119,40 @@ export default function CreateCourse() {
                 placeholder="এই course এ কী কী পড়ানো হবে..."
                 rows={4}
               />
+            </div>
+
+            {/* Class */}
+            <div>
+              <label className="text-gray-400 text-sm mb-3 block">Class</label>
+              <div className="flex flex-wrap gap-2">
+                {classes.map((cls) => (
+                  <button
+                    key={cls}
+                    type="button"
+                    onClick={() => setSelectedClass(cls)}
+                    className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${selectedClass === cls ? 'bg-purple-600 border-purple-600 text-white' : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-purple-500'}`}
+                  >
+                    {cls}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Subject */}
+            <div>
+              <label className="text-gray-400 text-sm mb-3 block">Subject</label>
+              <div className="flex flex-wrap gap-2">
+                {subjects.map((sub) => (
+                  <button
+                    key={sub}
+                    type="button"
+                    onClick={() => setSubject(sub)}
+                    className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${subject === sub ? 'bg-blue-600 border-blue-600 text-white' : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-blue-500'}`}
+                  >
+                    {sub}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Course Type */}
