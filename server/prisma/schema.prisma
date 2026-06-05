@@ -77,6 +77,5 @@ model CourseEnrollment {
   course    Course   @relation(fields: [courseId], references: [id])
   courseId  Int
   status    String   @default("pending")
-  completedVideoIds Int[]  @default([])  
   joinedAt  DateTime @default(now())
 }
