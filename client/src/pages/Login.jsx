@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import axios from 'axios'
 
 export default function Login() {
-  const [email, setEmail] = useState('')
+  const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -15,7 +15,7 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     try {
-      const res = await axios.post('/api/auth/login', { email, password })
+      const res = await axios.post('/api/auth/login', { identifier, password })
       login(res.data.user, res.data.token)
       if (res.data.user.role === 'teacher') {
         navigate('/teacher/dashboard')
@@ -23,7 +23,7 @@ export default function Login() {
         navigate('/student/dashboard')
       }
     } catch (err) {
-      setError('Invalid email or password')
+      setError('Credentials do not match')
     }
     setLoading(false)
   }
@@ -31,10 +31,7 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
-         <div className="max-w-5xl mx-auto px-6 py-6 flex justify-center">
-                <img src="/logo.png" alt="SWP Classroom" className="w-100 h-100 rounded-full object-cover border-4 border-black/50" />
-            </div>
+        
 
         {/* Card */}
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl">
@@ -49,11 +46,11 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-gray-400 text-sm mb-1 block">Email</label>
+              <label className="text-gray-400 text-sm mb-1 block">Email or Mobile No</label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition"
                 placeholder="you@example.com"
               />

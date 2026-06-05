@@ -6,18 +6,25 @@ const prisma = new PrismaClient()
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body
+    const { name, email, mobileNo, password, role } = req.body
 
- 
+    if (!mobileNo) {
+      return res.status(400).json({ message: 'Mobile number is required' })
+    }
+
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) return res.status(400).json({ message: 'Email already exists' })
+
+
+    const existingmobile = await prisma.user.findUnique({ where: { mobileNo } })
+    if (existingmobile) return res.status(400).json({ message: 'Mobile number already exists' })
 
     // password encrypt করা
     const hashedPassword = await bcrypt.hash(password, 10)
 
     // user বানানো
     const user = await prisma.user.create({
-      data: { name, email, password: hashedPassword, role }
+      data: { name, email: email || null, mobileNo, password: hashedPassword, role }
     })
 
     res.status(201).json({ message: 'Registration successful', userId: user.id })
@@ -28,21 +35,31 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body
+    const { identifier, password } = req.body
 
-    // user খোঁজা
-    const user = await prisma.user.findUnique({ where: { email } })
+    if (!identifier) {
+      return res.status(400).json({ message: 'Email or mobile is required' })
+    }
+
+    
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: identifier },
+          { mobileNo: identifier }
+        ]
+      }
+    })
+
     if (!user) return res.status(400).json({ message: 'Invalid credentials' })
 
-    // password check
     const isMatch = await bcrypt.compare(password, user.password)
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' })
 
-    // JWT token বানানো
     const token = jwt.sign(
       { userId: user.id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '2d' }
     )
 
     res.json({ token, user: { id: user.id, name: user.name, role: user.role } })

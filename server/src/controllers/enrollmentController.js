@@ -65,7 +65,7 @@ export const getPendingEnrollments = async(req,res)=>{
         const enrollments = await prisma.courseEnrollment.findMany({
             where:{status:'pending'},
             include:{
-                user: {select : {id : true , name: true ,email:true}},
+                user: {select : {id : true , name: true ,email:true,mobileNo:true}},
                 course:{select:{id:true,title:true}}
 
             }

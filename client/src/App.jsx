@@ -9,6 +9,21 @@ import CourseDetail from './pages/courseDetail'
 import TeacherCourses from './pages/teacherCourses'
 import StudentHome from './pages/studentHome'
 import StudentCourseDetail from './pages/studentCourseDetail'
+import About from './pages/About'
+import PendingEnrollments from './pages/PendingEnrollments'
+import axios from 'axios'
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      window.location.href = '/login'
+    }
+    return Promise.reject(error)
+  }
+)
 
 export default function App() {
   return (
@@ -24,6 +39,12 @@ export default function App() {
       <Route path="/teacher/courses" element={<TeacherCourses />} />
       <Route path="/student/home" element={<StudentHome />} />
       <Route path="/student/course/:id" element={<StudentCourseDetail />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/teacher/pending-enrollments" element={<PendingEnrollments />} />
     </Routes>
   )
 }
+
+
+
+

@@ -4,6 +4,7 @@ import axios from 'axios'
 
 export default function Register() {
   const [name, setName] = useState('')
+  const [mobile, setMobile] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState('student')
@@ -15,21 +16,17 @@ export default function Register() {
     e.preventDefault()
     setLoading(true)
     try {
-      await axios.post('/api/auth/register', { name, email, password, role })
+      await axios.post('/api/auth/register', { name, email,mobileNo:mobile, password, role })
       navigate('/login')
     } catch (err) {
       setError(err.response?.data?.message || 'Something went wrong')
     }
     setLoading(false)
   }
-
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-     
-     <div className="max-w-5xl mx-auto px-6 py-6 flex justify-center">
-                <img src="/logo.png" alt="SWP Classroom" className="w-60 h-60 rounded-full object-cover border-4 border-black/50" />
-            </div>
+    
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl">
           <h2 className="text-white text-2xl font-bold mb-1">Create account</h2>
           <p className="text-gray-400 text-sm mb-6">Join SWP today</p>
@@ -47,6 +44,16 @@ export default function Register() {
                 onChange={(e) => setName(e.target.value)}
                 className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition"
                 placeholder="Your name"
+              />
+            </div>
+            <div>
+              <label className="text-gray-400 text-sm mb-1 block">Mobile No</label>
+              <input
+                type="tel"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
+                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition"
+                placeholder="your mobile number"
               />
             </div>
             <div>
@@ -69,7 +76,7 @@ export default function Register() {
                 placeholder="••••••••"
               />
             </div>
-         const [role, setRole] = useState('student')
+             
             <button
               type="submit"
               disabled={loading}

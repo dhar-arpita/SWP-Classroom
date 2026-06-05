@@ -10,12 +10,14 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   name      String
-  email     String   @unique
+  email     String?   @unique
+  mobileNo  String @unique
   password  String
   role      String   @default("student")
   createdAt DateTime @default(now())
   courses   CourseEnrollment[]
   uploadedCourses Course[]
+  
 }
 
 model Course {
@@ -65,6 +67,9 @@ model Material {
   videoId   Int
 }
 
+
+
+
 model CourseEnrollment {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
@@ -72,5 +77,6 @@ model CourseEnrollment {
   course    Course   @relation(fields: [courseId], references: [id])
   courseId  Int
   status    String   @default("pending")
+  completedVideoIds Int[]  @default([])  
   joinedAt  DateTime @default(now())
 }

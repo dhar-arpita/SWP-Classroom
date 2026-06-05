@@ -8,19 +8,20 @@ export default function Navbar({ role }) {
 
   const handleLogout = () => {
     logout()
-    navigate('/login')
+    navigate('/home')
   }
 
   const studentLinks = [
-    location.pathname === '/student/dashboard' ? { label: 'Home', path: '/student/home' } : { label: 'Dashboard', path: '/student/dashboard' },
-    { label: 'My Courses', path: '/student/courses' },
+    { label: 'Home', path: '/student/home' },
+    { label: 'My Courses', path: '/student/dashboard' },
     { label: 'Progress', path: '/student/progress' },
     { label: 'Announcements', path: '/student/announcements' },
   ]
 
   const teacherLinks = [
     { label: 'Home', path: '/teacher/dashboard' },
-     { label: 'My Courses', path: '/teacher/courses' },
+    { label: 'My Courses', path: '/teacher/courses' },
+    { label: 'Pending Enrollments', path: '/teacher/pending-enrollments' },
     { label: '+ Create Course', path: '/teacher/create-course' },
   ]
 
@@ -28,24 +29,24 @@ export default function Navbar({ role }) {
 
   return (
     <nav style={{ background: '#0a0a0a', borderBottom: '1px solid #1a1a1a' }} className="sticky top-0 z-50">
-      <div className="w-full px-6 grid grid-cols-3 items-center h-16">
+      <div className="w-full px-8 grid grid-cols-3 items-center h-20">
 
         {/* Logo - বামে */}
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/home')}>
-          <div className="bg-purple-600 w-8 h-8 rounded-lg flex items-center justify-center">
-            <span className="text-sm">⚛️</span>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/about')}>
+          <div className="bg-black-600 w-15 h-15 rounded-lg flex items-center justify-center">
+            <img src="/logo2.png" alt="SWP Classroom" className="w-15 h-15 object-cover" />
           </div>
           <span className="text-white font-bold text-lg">SWP</span>
-          <span className="hidden lg:block text-gray-500 text-xs ml-1">Survive with Physics</span>
+          <span className="hidden lg:block text-gray-500 text-xs ml-1">-Survive with Physics</span>
         </div>
 
         {/* Links - মাঝে */}
-        <div className="hidden md:flex items-center justify-center gap-20">
+        <div className="hidden md:flex items-center justify-center gap-15">
           {links.map((link) => (
             <button
               key={link.path}
               onClick={() => navigate(link.path)}
-              className={`px-8 py-2 rounded-lg text-sm font-medium transition-all border ${link.path === '/student/dashboard'|| link.path === '/student/home' || link.path === 'teacher/dashboard'
+              className={`px-6 py-3 rounded-lg text-sm font-medium transition-all border ${link.path === location.pathname
                   ? 'bg-purple-600 border-purple-600 text-white'
                   : 'border-gray-700 text-gray-300 hover:text-white hover:bg-gray-800 hover:border-gray-500'
                 }`}

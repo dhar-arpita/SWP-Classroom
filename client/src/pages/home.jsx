@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 
 export default function Home() {
     const navigate = useNavigate()
@@ -10,11 +10,11 @@ export default function Home() {
             <nav style={{ background: '#0a0a0a', borderBottom: '1px solid #1a1a1a' }} className="sticky top-0 z-50">
                 <div className="w-full px-6 flex items-center justify-between h-16">
                     <div className="flex items-center gap-2">
-                        <div className="max-w-5xl mx-auto px-6 py-6 flex justify-center">
-                <img src="/logo.png" alt="SWP Classroom" className="w-15 h-15 rounded-full object-cover border-2 border-black/50" />
-            </div>
-                        <span className="text-white font-bold text-lg">SWP</span>
-                        <span className="hidden lg:block text-gray-500 text-xs ml-1">Survive with Physics</span>
+                        <div className="bg-black-600 w-15 h-15 rounded-lg flex items-center justify-center" onClick={() => navigate('/about')}>
+                            <img src="/logo2.png" alt="SWP Classroom" className="w-15 h-15 rounded-fullobject-cover" />
+                        </div>
+                        <span className="text-white font-bold text-lg">SWP Classroom</span>
+                        <span className="hidden lg:block text-gray-500 text-xs ml-1">- Survive with Physics</span>
                     </div>
                     <div className="flex items-center gap-3">
                         <button onClick={() => navigate('/login')} className="text-gray-400 hover:text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-800 transition">
@@ -126,7 +126,7 @@ export default function Home() {
             </div>
 
             {/* Company Logo */}
-           
+
             {/* Footer */}
             <footer className="border-t border-gray-800 mt-10 py-8 text-center text-gray-600 text-sm">
                 <p>© 2025 SWP — Survive with Physics. All rights reserved.</p>
