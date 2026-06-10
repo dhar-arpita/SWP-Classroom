@@ -34,31 +34,39 @@ export default function StudentCourseDetail() {
   }
 
   const handleEnroll = async () => {
+  
+    if (course.isPaid) {
+      navigate(`/student/payment/${course.id}`)
+      return
+    }
+
     setEnrolling(true)
     setMessage('')
-    try {
-      const res = await axios.post(`/api/enrollments/${id}/enroll`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      setMessage(res.data.message)
-      fetchAll()
-    } catch (err) {
-      setMessage(err.response?.data?.message || 'Something went wrong')
-    }
-    setEnrolling(false)
+
+      try {
+        const res = await axios.post(`/api/enrollments/${id}/enroll`, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        setMessage(res.data.message)
+        fetchAll()
+      } catch (err) {
+        setMessage(err.response?.data?.message || 'Something went wrong')
+      }
+      setEnrolling(false)
+    
   }
 
   const getEmbedUrl = (url) => {
-  if (!url) return ''
-  
-  if (url.includes('mediadelivery.net')) {
-    return url.replace('player.mediadelivery.net/play/', 'iframe.mediadelivery.net/embed/')
+    if (!url) return ''
+
+    if (url.includes('mediadelivery.net')) {
+      return url.replace('player.mediadelivery.net/play/', 'iframe.mediadelivery.net/embed/')
+    }
+
+
+    const ytId = url.split('v=')[1]?.split('&')[0] || url.split('youtu.be/')[1]?.split('?')[0]
+    return `https://www.youtube.com/embed/${ytId}?modestbranding=1&rel=0`
   }
-  
-  
-  const ytId = url.split('v=')[1]?.split('&')[0] || url.split('youtu.be/')[1]?.split('?')[0]
-  return `https://www.youtube.com/embed/${ytId}?modestbranding=1&rel=0`
-}
 
   const isApproved = enrollment?.status === 'approved'
   const isPending = enrollment?.status === 'pending'
@@ -97,7 +105,7 @@ export default function StudentCourseDetail() {
                 disabled={enrolling}
                 className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition disabled:opacity-50"
               >
-                {enrolling ? 'Enrolling...' : course?.isPaid ? `Enroll • ৳${course?.price}` : 'Enroll for Free'}
+                {enrolling ? 'Enrolling...' : course?.isPaid ? `Enroll • ৳${course?.price} ` : 'Enroll for Free'}
               </button>
             ) : isApproved ? (
               <span className="inline-block bg-green-900 text-green-300 px-5 py-2.5 rounded-xl font-semibold">✅ Enrolled</span>
@@ -175,7 +183,7 @@ export default function StudentCourseDetail() {
                               {activeVideo === video.id && (
                                 <div className="mt-3 relative w-full rounded-xl overflow-hidden" style={{ paddingBottom: '56.25%' }}>
                                   <iframe
-                                    src={getEmbedUrl(video.videoUrl)}
+                                    src={getEmbedUrl(video.url)}
                                     title={video.title}
                                     className="absolute inset-0 w-full h-full"
                                     allowFullScreen

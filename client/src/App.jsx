@@ -11,7 +11,10 @@ import StudentHome from './pages/studentHome'
 import StudentCourseDetail from './pages/studentCourseDetail'
 import About from './pages/About'
 import PendingEnrollments from './pages/PendingEnrollments'
+import PaymentInstruction from './pages/paymentInstruction'
+
 import axios from 'axios'
+
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL || ''
 
@@ -43,6 +46,7 @@ export default function App() {
       <Route path="/student/course/:id" element={<StudentCourseDetail />} />
       <Route path="/about" element={<About />} />
       <Route path="/teacher/pending-enrollments" element={<PendingEnrollments />} />
+      <Route path="/student/payment/:courseId" element={<PaymentInstruction />} />
     </Routes>
   )
 }
