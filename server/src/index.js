@@ -1,9 +1,9 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
-const authRoutes = require('./routes/auth')
-const courseRoutes = require('./routes/courses')
-const enrollmentRoutes = require('./routes/enrollments')
+import authRoutes from './routes/auth.js'
+import courseRoutes from './routes/courses.js'
+import enrollmentRoutes from './routes/enrollments.js'
 
 const app = express()
 
