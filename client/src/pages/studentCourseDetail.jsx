@@ -48,8 +48,17 @@ export default function StudentCourseDetail() {
     setEnrolling(false)
   }
 
-  const getYouTubeId = (url) =>
-    url?.split('v=')[1]?.split('&')[0] || url?.split('youtu.be/')[1]?.split('?')[0]
+  const getEmbedUrl = (url) => {
+  if (!url) return ''
+  
+  if (url.includes('mediadelivery.net')) {
+    return url.replace('player.mediadelivery.net/play/', 'iframe.mediadelivery.net/embed/')
+  }
+  
+  
+  const ytId = url.split('v=')[1]?.split('&')[0] || url.split('youtu.be/')[1]?.split('?')[0]
+  return `https://www.youtube.com/embed/${ytId}?modestbranding=1&rel=0`
+}
 
   const isApproved = enrollment?.status === 'approved'
   const isPending = enrollment?.status === 'pending'
@@ -166,7 +175,8 @@ export default function StudentCourseDetail() {
                               {activeVideo === video.id && (
                                 <div className="mt-3 relative w-full rounded-xl overflow-hidden" style={{ paddingBottom: '56.25%' }}>
                                   <iframe
-                                    src={`https://www.youtube.com/embed/${getYouTubeId(video.url)}`}
+                                    src={getEmbedUrl(video.videoUrl)}
+                                    title={video.title}
                                     className="absolute inset-0 w-full h-full"
                                     allowFullScreen
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

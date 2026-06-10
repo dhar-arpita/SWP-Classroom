@@ -40,9 +40,18 @@ export default function CourseDetail() {
     setLoading(false)
   }
 
-  const getYouTubeId = (url) => {
-    return url?.split('v=')[1]?.split('&')[0] || url?.split('youtu.be/')[1]?.split('?')[0]
+ const getEmbedUrl = (url) => {
+  if (!url) return ''
+  
+  
+  if (url.includes('mediadelivery.net')) {
+    return url.replace('player.mediadelivery.net/play/', 'iframe.mediadelivery.net/embed/')
   }
+  
+  
+  const ytId = url.split('v=')[1]?.split('&')[0] || url.split('youtu.be/')[1]?.split('?')[0]
+  return `https://www.youtube.com/embed/${ytId}?modestbranding=1&rel=0`
+}
 
   const handleDeleteCourse = async () => {
     try {
@@ -357,7 +366,7 @@ export default function CourseDetail() {
                                       >
                                         <div className="px-3 pb-3">
                                           <div className="relative w-full rounded-xl overflow-hidden" style={{ paddingBottom: '56.25%' }}>
-                                            <iframe src={`https://www.youtube.com/embed/${getYouTubeId(video.url)}`} className="absolute inset-0 w-full h-full" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" />
+                                            <iframe src={getEmbedUrl(video.videoUrl)} title={video.title} className="absolute inset-0 w-full h-full" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" />
                                           </div>
                                         </div>
                                       </motion.div>
@@ -468,8 +477,8 @@ export default function CourseDetail() {
             <input type="text" value={videoTitle} onChange={(e) => setVideoTitle(e.target.value)} className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition" placeholder="e.g. Introduction to Motion" required />
           </div>
           <div>
-            <label className="text-gray-400 text-sm mb-1 block">YouTube Link</label>
-            <input type="url" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition" placeholder="https://youtube.com/watch?v=..." required />
+            <label className="text-gray-400 text-sm mb-1 block">Video Link(Youtube or Bunny.net)</label>
+            <input type="url" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition" placeholder="https://youtube.com/watch?v=... or Bunny.net video url" required />
           </div>
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={() => setAddVideoModal(null)} className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-xl font-medium transition">Cancel</button>
